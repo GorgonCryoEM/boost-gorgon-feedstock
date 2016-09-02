@@ -1,0 +1,103 @@
+{% set version = "1.61.0" %}
+{% set filename = "boost_%s.tar.bz2" % version.replace(".", "_") %}
+
+package:
+  name: boost-gorgon
+  version: {{ version }}
+
+source:
+  fn:  {{ filename }}
+  url: http://sourceforge.net/projects/boost/files/boost/{{ version }}/{{ filename }}
+  md5: 6095876341956f65f9d35939ccea1a9f
+
+build:
+  number: 1
+  features:
+    - vc9               # [win and py27]
+    - vc10              # [win and py34]
+    - vc14              # [win and py35]
+
+requirements:
+  build:
+    - python
+    - icu 56.*               # [unix]
+    - bzip2             # [unix]
+    - zlib 1.2*
+
+  run:
+    - python
+    - icu 56.*               # [unix]
+    - zlib 1.2*
+
+test:
+  commands:
+    # Verify static libraries.
+    - test -f $PREFIX/lib/libboost_chrono.a                   # [unix]
+    - test -f $PREFIX/lib/libboost_exception.a                # [unix]
+    - test -f $PREFIX/lib/libboost_system.a                   # [unix]
+    - test -f $PREFIX/lib/libboost_test_exec_monitor.a        # [unix]
+    - test -f $PREFIX/lib/libboost_timer.a                    # [unix]
+    - test -f $PREFIX/lib/libboost_filesystem.a               # [unix]
+    - test -f $PREFIX/lib/libboost_thread.a                   # [unix]
+    - test -f $PREFIX/lib/libboost_unit_test_framework.a      # [unix]
+    - test -f $PREFIX/lib/libboost_date_time.a                # [unix]
+    - test -f $PREFIX/lib/libboost_atomic.a                   # [unix]
+
+    # Verify dynamic libraries.
+    {% set win_vstr = "_".join(version.split(".")[:2]) %}
+    {% set boost_libs = [
+            "atomic",
+            "chrono",
+            "container",
+            "context",
+            "coroutine",
+            "date_time",
+            "filesystem",
+            "graph",
+            "iostreams",
+            "locale",
+            "log",
+            "log_setup",
+            "math_c99",
+            "math_c99f",
+            "math_c99l",
+            "math_tr1",
+            "math_tr1f",
+            "math_tr1l",
+            "prg_exec_monitor",
+            "program_options",
+            "python",
+            "random",
+            "regex",
+            "serialization",
+            "signals",
+            "system",
+            "thread",
+            "timer",
+            "type_erasure",
+            "unit_test_framework",
+            "wave",
+            "wserialization"
+    ] %}
+    {% for each_boost_lib in boost_libs %}
+    - test -f $PREFIX/lib/libboost_{{ each_boost_lib }}.dylib                                             # [osx]
+    - test -f $PREFIX/lib/libboost_{{ each_boost_lib }}.so                                                # [linux]
+    - if not exist %PREFIX%\\Library\\bin\\boost_{{ each_boost_lib }}-vc90-mt-{{ win_vstr }}.dll exit 1   # [win and py27]
+    - if not exist %PREFIX%\\Library\\bin\\boost_{{ each_boost_lib }}-vc100-mt-{{ win_vstr }}.dll exit 1  # [win and py34]
+    - if not exist %PREFIX%\\Library\\bin\\boost_{{ each_boost_lib }}-vc140-mt-{{ win_vstr }}.dll exit 1  # [win and py35]
+    - if not exist %PREFIX%\\Library\\lib\\boost_{{ each_boost_lib }}-vc90-mt-{{ win_vstr }}.lib exit 1   # [win and py27]
+    - if not exist %PREFIX%\\Library\\lib\\boost_{{ each_boost_lib }}-vc100-mt-{{ win_vstr }}.lib exit 1  # [win and py34]
+    - if not exist %PREFIX%\\Library\\lib\\boost_{{ each_boost_lib }}-vc140-mt-{{ win_vstr }}.lib exit 1  # [win and py35]
+    {% endfor %}
+
+about:
+  home: http://www.boost.org/
+  license: Boost-1.0
+  summary: Free peer-reviewed portable C++ source libraries.
+
+extra:
+  recipe-maintainers:
+    - ccordoba12
+    - jakirkham
+    - msarahan
+    - ocefpaf
