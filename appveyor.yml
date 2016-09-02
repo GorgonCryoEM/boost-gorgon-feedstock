@@ -14,6 +14,9 @@ environment:
   # We set a default Python version for the miniconda that is to be installed. This can be
   # overridden in the matrix definition where appropriate.
   CONDA_PY: "27"
+  BINSTAR_TOKEN:
+    # The BINSTAR_TOKEN secure variable. This is defined canonically in conda-forge.yml.
+    secure: 4ef5IUakGqqw7GSfuIp93Q4MdAC1VnweE1kFVAOUs6ThPDQWBqNpGaq6ZuEbX1FL
 
   matrix:
     - TARGET_ARCH: x86
@@ -71,4 +74,4 @@ test_script:
     - "%CMD_IN_ENV% conda build recipe --quiet"
 deploy_script:
 
-    - 'python ci_support\upload_or_check_non_existence.py .\recipe conda-forge --channel=main'
+    - 'python ci_support\upload_or_check_non_existence.py .\recipe gorgoncryoem --channel=dependency'
