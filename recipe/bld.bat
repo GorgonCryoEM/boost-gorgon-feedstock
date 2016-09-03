@@ -14,3 +14,5 @@ move %libdir%\*.lib    %LIBRARY_LIB%
 if errorlevel 1 exit 1
 
 %PYTHON% %RECIPE_DIR%\..\ci_support\upload_or_check_non_existence.py %RECIPE_DIR% gorgoncryoem --channel=dependency
+echo %ARCH%
+echo %libdir%
