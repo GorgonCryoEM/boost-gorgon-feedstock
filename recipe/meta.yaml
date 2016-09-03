@@ -5,10 +5,12 @@ package:
   version: {{ version }}
 
 source:
-  path:  {{ RECIPE_DIR }}/../src
+  git_url: https://github.com/GorgonCryoEM/boost-gorgon-binaries.git  # [win]
+  git_tag: master      # [win]
 
 build:
   number: 0
+  skip: True    # [not wint]
 
 requirements:
   build:
