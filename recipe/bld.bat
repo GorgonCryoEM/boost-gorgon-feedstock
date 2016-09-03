@@ -1,4 +1,4 @@
-set vc="14.0"
+set vc=14.0
 set libdir="lib%ARCH%-msvc-%vc%"
 
 :: Move headers to LIBRARY_INC
